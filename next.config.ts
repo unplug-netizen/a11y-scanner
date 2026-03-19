@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['puppeteer'],
-  webpack: (config) => {
-    return config;
+  serverExternalPackages: ['puppeteer', '@sparticuz/chromium'],
+  experimental: {
+    serverComponentsExternalPackages: ['puppeteer', '@sparticuz/chromium'],
   },
 };
 
