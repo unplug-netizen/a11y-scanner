@@ -156,13 +156,13 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header with User Menu */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-6 h-6 text-blue-600" />
-            <span className="font-semibold text-gray-900">A11y Scanner</span>
+            <span className="font-semibold text-gray-900 dark:text-white">A11y Scanner</span>
           </div>
           <div className="flex items-center gap-2">
             {!isAuthenticated && (

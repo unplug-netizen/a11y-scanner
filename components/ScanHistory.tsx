@@ -18,7 +18,7 @@ interface ScanHistoryProps {
 }
 
 export function ScanHistory({ onLoadScan }: ScanHistoryProps) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, session } = useAuth();
   const [scans, setScans] = useState<SavedScan[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,10 +50,16 @@ export function ScanHistory({ onLoadScan }: ScanHistoryProps) {
   }, [isOpen]);
 
   const loadScans = async () => {
+    if (!session?.access_token) return;
+    
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/scans');
+      const response = await fetch('/api/scans', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setScans(data.scans || []);
@@ -68,9 +74,14 @@ export function ScanHistory({ onLoadScan }: ScanHistoryProps) {
   };
 
   const deleteScan = async (id: string) => {
+    if (!session?.access_token) return;
+    
     try {
       const response = await fetch(`/api/scans?id=${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
       });
       if (response.ok) {
         setScans(scans.filter(s => s.id !== id));
@@ -111,16 +122,16 @@ export function ScanHistory({ onLoadScan }: ScanHistoryProps) {
             }
           }}
         >
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] flex flex-col">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <History className="w-5 h-5" />
                 Scan-History
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -139,9 +150,9 @@ export function ScanHistory({ onLoadScan }: ScanHistoryProps) {
                 </div>
               ) : scans.length === 0 ? (
                 <div className="text-center py-12">
-                  <History className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-600">Noch keine gespeicherten Scans</p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <History className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <p className="text-gray-600 dark:text-gray-400">Noch keine gespeicherten Scans</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
                     Deine Scans werden automatisch gespeichert
                   </p>
                 </div>
@@ -150,17 +161,17 @@ export function ScanHistory({ onLoadScan }: ScanHistoryProps) {
                   {scans.map((scan) => (
                     <div
                       key={scan.id}
-                      className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors group"
+                      className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-300 transition-colors group dark:bg-gray-700"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                            <span className="font-medium text-gray-900 truncate">
+                            <span className="font-medium text-gray-900 dark:text-white truncate">
                               {scan.url}
                             </span>
                           </div>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                             <span>{formatDate(scan.timestamp)}</span>
                             <span className={`px-2 py-0.5 rounded-full text-xs ${
                               scan.violation_count > 0 

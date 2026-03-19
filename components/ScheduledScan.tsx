@@ -132,9 +132,9 @@ export function ScheduledScanModal({ isOpen, onClose }: ScheduledScanModalProps)
         }
       }}
     >
-      <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[80vh] overflow-hidden">
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Geplante Scans</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[80vh] overflow-hidden">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Geplante Scans</h2>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowCreateForm(true)}
@@ -190,22 +190,22 @@ export function ScheduledScanModal({ isOpen, onClose }: ScheduledScanModalProps)
                 <div 
                   key={scan.id} 
                   className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    scan.isActive ? 'border-gray-200 hover:border-blue-300' : 'border-gray-200 bg-gray-50 opacity-75'
+                    scan.isActive ? 'border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:bg-gray-700' : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 opacity-75'
                   }`}
                   onClick={() => setSelectedScan(scan)}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-gray-900">{scan.name}</h3>
+                        <h3 className="font-medium text-gray-900 dark:text-white">{scan.name}</h3>
                         {!scan.isActive && (
                           <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
                             Pausiert
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 mt-1">{scan.url}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{scan.url}</p>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           {scan.frequency === 'daily' ? 'Täglich' :
