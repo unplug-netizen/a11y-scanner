@@ -1,37 +1,5 @@
 import OpenAI from 'openai';
-import { A11yViolation, FixSuggestion, EnhancedFixSuggestion, CodeExample } from '@/types';
-
-// Enhanced fix suggestion with detailed explanations and code examples
-export interface EnhancedFixSuggestion {
-  violationId: string;
-  violationType: string;
-  impact: string;
-  originalCode: string;
-  originalHtml: string;
-  fixedCode: string;
-  explanation: string;
-  explanationDetailed: string;
-  codeExamples: CodeExample[];
-  wcagCriterion: string;
-  wcagLevel: string;
-  wcagUrl: string;
-  resources: Resource[];
-  confidenceScore: number;
-  complexity: 'simple' | 'moderate' | 'complex';
-  estimatedTime: string;
-}
-
-interface Resource {
-  title: string;
-  url: string;
-  type: 'mdn' | 'wcag' | 'article' | 'tool';
-}
-
-interface CodeExample {
-  title: string;
-  code: string;
-  language: 'html' | 'css' | 'js' | 'react' | 'vue' | 'angular';
-}
+import { A11yViolation, FixSuggestion, EnhancedFixSuggestion, CodeExample, Resource } from '@/types';
 
 // WCAG criterion mapping for common violations
 const WCAG_MAPPING: Record<string, { criterion: string; level: string; url: string }> = {

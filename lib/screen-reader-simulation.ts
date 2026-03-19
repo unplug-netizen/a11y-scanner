@@ -48,6 +48,7 @@ export interface LandmarkIssue {
 
 export interface ARIAIssue {
   element: string;
+  html: string;
   issue: string;
   severity: 'critical' | 'warning' | 'info';
   suggestion: string;

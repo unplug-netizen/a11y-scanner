@@ -123,7 +123,7 @@ export async function generateVisualOverlay(
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
     // Wait a bit for any animations to settle
-    await page.waitForTimeout(1000);
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Collect highlight positions
     const highlights: ViolationHighlight[] = [];
@@ -405,7 +405,7 @@ export async function generateVisualOverlayForViewport(
     const page = await browser.newPage();
     await page.setViewport(viewport);
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-    await page.waitForTimeout(1000);
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Similar highlight collection and drawing logic as above
     // (simplified for brevity)
