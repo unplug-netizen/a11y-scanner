@@ -1,6 +1,7 @@
 'use server';
 
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { A11yViolation, ScanResult } from '@/types';
@@ -9,9 +10,21 @@ export async function scanWebsite(url: string): Promise<ScanResult> {
   let browser;
   
   try {
+    // Chrome-Args für Serverless (Vercel)
+    const chromeArgs = [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-web-security',
+      '--disable-features=IsolateOrigins,site-per-process',
+      '--disable-site-isolation-trials',
+    ];
+
     browser = await puppeteer.launch({
+      args: chromeArgs,
+      executablePath: await chromium.executablePath(),
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@axe-core/react": "^4.11.1",
+    "@sparticuz/chromium": "^143.0.4",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/supabase-js": "^2.99.2",
     "axe-core": "^4.11.1",
@@ -22,7 +23,7 @@
     "next": "16.2.0",
     "openai": "^6.32.0",
     "pdfmake": "^0.3.7",
-    "puppeteer": "^24.39.1",
+    "puppeteer-core": "^24.39.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwind-merge": "^3.5.0"
