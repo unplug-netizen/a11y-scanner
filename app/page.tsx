@@ -1,22 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ScanResult, A11yViolation, FixSuggestion } from '@/types';
 import { getImpactColor, getImpactLabel } from '@/lib/helpers';
 import { ScanForm } from '@/components/ScanForm';
 import { ViolationCard } from '@/components/ViolationCard';
 import { ReportDownload } from '@/components/ReportDownload';
-import { Loader2, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { UserMenu, AuthModal } from '@/components/AuthModal';
+import { ScanHistory } from '@/components/ScanHistory';
+import { useAuth } from '@/components/AuthProvider';
+import { Loader2, AlertCircle, CheckCircle, Info, Shield, History } from 'lucide-react';
 
 export default function Home() {
   const [result, setResult] = useState<ScanResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [scanCount, setScanCount] = useState<number>(0);
+  const [showLimitWarning, setShowLimitWarning] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isAuthenticated, user, session } = useAuth();
+
+  // Load scan count from localStorage on mount
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const stored = localStorage.getItem(`scanCount_${today}`);
+    setScanCount(stored ? parseInt(stored, 10) : 0);
+  }, []);
+
+  // Update scan count
+  const incrementScanCount = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const newCount = scanCount + 1;
+    localStorage.setItem(`scanCount_${today}`, newCount.toString());
+    setScanCount(newCount);
+  };
 
   const handleScan = async (url: string) => {
+    // Rate limiting: 3 scans/day for non-authenticated users
+    const DAILY_LIMIT = 3;
+    if (!isAuthenticated && scanCount >= DAILY_LIMIT) {
+      setError(`Tageslimit erreicht. Melde dich an für unbegrenzte Scans.`);
+      setShowLimitWarning(true);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
+    setShowLimitWarning(false);
 
     try {
       const response = await fetch('/api/scan', {
@@ -32,6 +63,12 @@ export default function Home() {
       }
 
       setResult(data);
+      if (!isAuthenticated) {
+        incrementScanCount();
+      } else {
+        // Save scan to history
+        saveScanToHistory(url, data);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     } finally {
@@ -44,10 +81,54 @@ export default function Home() {
   const moderateCount = result?.violations.filter(v => v.impact === 'moderate').length || 0;
   const minorCount = result?.violations.filter(v => v.impact === 'minor').length || 0;
 
+  const remainingScans = Math.max(0, 3 - scanCount);
+
+  const saveScanToHistory = async (url: string, scanResult: ScanResult) => {
+    if (!session?.access_token) return;
+    
+    try {
+      await fetch('/api/scans', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ url, result: scanResult }),
+      });
+    } catch (err) {
+      console.error('Error saving scan:', err);
+    }
+  };
+
+  const handleLoadScan = (scanResult: ScanResult) => {
+    setResult(scanResult);
+    setError(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <main className="min-h-screen bg-gray-50">
+      {/* Header with User Menu */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Shield className="w-6 h-6 text-blue-600" />
+            <span className="font-semibold text-gray-900">A11y Scanner</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {!isAuthenticated && (
+              <span className="text-sm text-gray-500 hidden sm:block mr-4">
+                {remainingScans} von 3 Scans übrig heute
+              </span>
+            )}
+            <ScanHistory onLoadScan={handleLoadScan} />
+            <UserMenu />
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Header */}
+        {/* Hero */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             🔍 A11y Scanner
@@ -55,16 +136,34 @@ export default function Home() {
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Überprüfe deine Website auf WCAG-Konformität mit KI-gestützten Fix-Vorschlägen.
           </p>
+          {!isAuthenticated && (
+            <div className="mt-4">
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full text-sm text-blue-700 hover:bg-blue-100 transition-colors"
+              >
+                <Shield className="w-4 h-4" />
+                Melde dich an für unbegrenzte Scans & Scan-History
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Scan Form */}
-        <ScanForm onScan={handleScan} loading={loading} />
+        <ScanForm onScan={handleScan} loading={loading} disabled={!isAuthenticated && remainingScans === 0} />
 
         {/* Error */}
         {error && (
           <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-600" />
-            <p className="text-red-700">{error}</p>
+            <div className="flex-1">
+              <p className="text-red-700">{error}</p>
+              {showLimitWarning && (
+                <p className="text-sm text-red-600 mt-1">
+                  Erstelle einen kostenlosen Account für unbegrenzte Scans.
+                </p>
+              )}
+            </div>
           </div>
         )}
 
@@ -142,8 +241,8 @@ export default function Home() {
               <div className="text-sm text-blue-700">
                 <p className="font-medium">Hinweis</p>
                 <p>
-                  Dieser Scan prüft automatisierte WCAG-Kriterien. Manuelle Prüfungen 
-                  (z.B. Tastaturbedienbarkeit, Screenreader-Tests) sind weiterhin erforderlich 
+                  Dieser Scan prüft automatisierte WCAG-Kriterien. Manuelle Prüfungen
+                  (z.B. Tastaturbedienbarkeit, Screenreader-Tests) sind weiterhin erforderlich
                   für vollständige Konformität.
                 </p>
               </div>
@@ -151,6 +250,9 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </main>
   );
 }
