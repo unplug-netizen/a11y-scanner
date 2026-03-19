@@ -3,13 +3,35 @@
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 import { A11yViolation, ScanResult } from '@/types';
 
 export async function scanWebsite(url: string): Promise<ScanResult> {
   let browser;
   
   try {
+    // Bestimme den Pfad zu den Chromium-Binaries
+    // Auf Vercel müssen wir den korrekten Pfad finden
+    const possiblePaths = [
+      join(process.cwd(), 'node_modules', '@sparticuz', 'chromium', 'bin'),
+      join('/var/task', 'node_modules', '@sparticuz', 'chromium', 'bin'),
+      join('/tmp', 'chromium'),
+    ];
+    
+    let chromiumBinPath: string | undefined;
+    for (const path of possiblePaths) {
+      try {
+        const { existsSync } = await import('fs');
+        if (existsSync(path)) {
+          chromiumBinPath = path;
+          console.log('Found chromium binaries at:', path);
+          break;
+        }
+      } catch {
+        // Continue to next path
+      }
+    }
+
     // Chrome-Args für Serverless (Vercel)
     const chromeArgs = [
       '--no-sandbox',
@@ -19,11 +41,16 @@ export async function scanWebsite(url: string): Promise<ScanResult> {
       '--disable-web-security',
       '--disable-features=IsolateOrigins,site-per-process',
       '--disable-site-isolation-trials',
+      '--single-process',
+      '--no-zygote',
     ];
 
+    // Hole den Chromium-Executable-Pfad
+    const executablePath = await chromium.executablePath(chromiumBinPath);
+    
     browser = await puppeteer.launch({
       args: chromeArgs,
-      executablePath: await chromium.executablePath(),
+      executablePath,
       headless: true,
     });
 
