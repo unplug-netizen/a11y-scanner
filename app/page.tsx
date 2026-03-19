@@ -9,7 +9,23 @@ import { ReportDownload } from '@/components/ReportDownload';
 import { UserMenu, AuthModal } from '@/components/AuthModal';
 import { ScanHistory } from '@/components/ScanHistory';
 import { useAuth } from '@/components/AuthProvider';
-import { Loader2, AlertCircle, CheckCircle, Info, Shield, History } from 'lucide-react';
+import { ComplianceBadge } from '@/components/ComplianceBadge';
+import { BulkScanModal, BulkScanHistory } from '@/components/BulkScan';
+import { ScheduledScanModal } from '@/components/ScheduledScan';
+import { ApiKeysModal } from '@/components/ApiKeys';
+import { 
+  Loader2, 
+  AlertCircle, 
+  CheckCircle, 
+  Info, 
+  Shield, 
+  History, 
+  Layers, 
+  Zap,
+  BarChart3,
+  Calendar,
+  Key
+} from 'lucide-react';
 import { Footer } from '@/components/Footer';
 
 export default function Home() {
@@ -19,6 +35,9 @@ export default function Home() {
   const [scanCount, setScanCount] = useState<number>(0);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showBulkScanModal, setShowBulkScanModal] = useState(false);
+  const [showScheduledScanModal, setShowScheduledScanModal] = useState(false);
+  const [showApiKeysModal, setShowApiKeysModal] = useState(false);
   const { isAuthenticated, user, session } = useAuth();
 
   // Load scan count from localStorage on mount
@@ -36,7 +55,7 @@ export default function Home() {
     setScanCount(newCount);
   };
 
-  const handleScan = async (url: string) => {
+  const handleScan = async (url: string, mode: 'quick' | 'deep') => {
     // Rate limiting: 3 scans/day for non-authenticated users
     const DAILY_LIMIT = 3;
     if (!isAuthenticated && scanCount >= DAILY_LIMIT) {
@@ -54,7 +73,7 @@ export default function Home() {
       const response = await fetch('/api/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, mode }),
       });
 
       const data = await response.json();
@@ -122,7 +141,37 @@ export default function Home() {
                 {remainingScans} von 3 Scans übrig heute
               </span>
             )}
+            {isAuthenticated && (
+              <>
+                <button
+                  onClick={() => setShowBulkScanModal(true)}
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Bulk Scan"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  <span className="text-sm">Bulk</span>
+                </button>
+                <button
+                  onClick={() => setShowScheduledScanModal(true)}
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Geplante Scans"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm">Geplant</span>
+                </button>
+                <button
+                  onClick={() => setShowApiKeysModal(true)}
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="API Keys"
+                >
+                  <Key className="w-4 h-4" />
+                  <span className="text-sm">API</span>
+                </button>
+                <div className="w-px h-6 bg-gray-300 mx-1 hidden sm:block" />
+              </>
+            )}
             <ScanHistory onLoadScan={handleLoadScan} />
+            {isAuthenticated && <BulkScanHistory />}
             <UserMenu />
           </div>
         </div>
@@ -145,6 +194,36 @@ export default function Home() {
               >
                 <Shield className="w-4 h-4" />
                 Melde dich an für unbegrenzte Scans & Scan-History
+              </button>
+            </div>
+          )}
+          
+          {/* Feature Cards for authenticated users */}
+          {isAuthenticated && (
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+              <button
+                onClick={() => setShowBulkScanModal(true)}
+                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+              >
+                <BarChart3 className="w-8 h-8 text-blue-600 mb-3" />
+                <h3 className="font-semibold text-gray-900">Bulk Scan</h3>
+                <p className="text-sm text-gray-500 mt-1">Bis zu 50 URLs auf einmal scannen</p>
+              </button>
+              <button
+                onClick={() => setShowScheduledScanModal(true)}
+                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+              >
+                <Calendar className="w-8 h-8 text-green-600 mb-3" />
+                <h3 className="font-semibold text-gray-900">Geplante Scans</h3>
+                <p className="text-sm text-gray-500 mt-1">Automatisch täglich/wöchentlich/monatlich</p>
+              </button>
+              <button
+                onClick={() => setShowApiKeysModal(true)}
+                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+              >
+                <Key className="w-8 h-8 text-purple-600 mb-3" />
+                <h3 className="font-semibold text-gray-900">Developer API</h3>
+                <p className="text-sm text-gray-500 mt-1">API-Key basierter Zugriff</p>
               </button>
             </div>
           )}
@@ -173,6 +252,11 @@ export default function Home() {
           <div className="mt-12 flex flex-col items-center justify-center">
             <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
             <p className="mt-4 text-gray-600">Website wird analysiert...</p>
+            {result?.scanMode === 'deep' && (
+              <p className="mt-2 text-sm text-gray-500">
+                Deep Scan kann bis zu 2 Minuten dauern...
+              </p>
+            )}
           </div>
         )}
 
@@ -181,12 +265,32 @@ export default function Home() {
           <div className="mt-12 space-y-6">
             {/* Summary */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
                   <h2 className="text-2xl font-semibold text-gray-900">
                     Scan-Ergebnisse
                   </h2>
                   <p className="text-gray-500 mt-1">{result.url}</p>
+                  {result.scanMode && (
+                    <div className="flex items-center gap-2 mt-2">
+                      {result.scanMode === 'quick' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+                          <Zap className="w-3 h-3" />
+                          Quick Scan
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded-full">
+                          <Layers className="w-3 h-3" />
+                          Deep Scan
+                        </span>
+                      )}
+                      {result.pagesScanned && result.pagesScanned > 1 && (
+                        <span className="text-xs text-gray-500">
+                          ({result.pagesScanned} Seiten geprüft)
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <ReportDownload result={result} />
               </div>
@@ -222,6 +326,11 @@ export default function Home() {
               )}
             </div>
 
+            {/* Compliance Badge */}
+            {result.compliance && (
+              <ComplianceBadge compliance={result.compliance} />
+            )}
+
             {/* Violations */}
             {result.violations.length > 0 && (
               <div className="space-y-4">
@@ -252,8 +361,11 @@ export default function Home() {
         )}
       </div>
 
-      {/* Auth Modal */}
+      {/* Modals */}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <BulkScanModal isOpen={showBulkScanModal} onClose={() => setShowBulkScanModal(false)} />
+      <ScheduledScanModal isOpen={showScheduledScanModal} onClose={() => setShowScheduledScanModal(false)} />
+      <ApiKeysModal isOpen={showApiKeysModal} onClose={() => setShowApiKeysModal(false)} />
 
       <Footer />
     </main>

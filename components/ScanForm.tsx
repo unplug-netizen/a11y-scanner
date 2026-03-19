@@ -1,26 +1,67 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Loader2, Lock } from 'lucide-react';
+import { Search, Loader2, Lock, Zap, Layers } from 'lucide-react';
 
 interface ScanFormProps {
-  onScan: (url: string) => void;
+  onScan: (url: string, mode: 'quick' | 'deep') => void;
   loading: boolean;
   disabled?: boolean;
 }
 
 export function ScanForm({ onScan, loading, disabled }: ScanFormProps) {
   const [url, setUrl] = useState('');
+  const [mode, setMode] = useState<'quick' | 'deep'>('quick');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (url.trim() && !loading && !disabled) {
-      onScan(url.trim());
+      onScan(url.trim(), mode);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
+      {/* Scan Mode Toggle */}
+      <div className="flex justify-center mb-4">
+        <div className="inline-flex bg-gray-100 rounded-lg p-1">
+          <button
+            type="button"
+            onClick={() => setMode('quick')}
+            disabled={loading}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              mode === 'quick'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            } disabled:opacity-50`}
+          >
+            <Zap className="w-4 h-4" />
+            Quick Scan
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('deep')}
+            disabled={loading}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              mode === 'deep'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            } disabled:opacity-50`}
+          >
+            <Layers className="w-4 h-4" />
+            Deep Scan
+          </button>
+        </div>
+      </div>
+
+      {/* Mode Description */}
+      <p className="text-center text-sm text-gray-500 mb-4">
+        {mode === 'quick' 
+          ? "Nur die Start-URL wird geprüft (~10 Sekunden)"
+          : "Crawlt bis zu 15 interne Seiten (~60-120 Sekunden)"
+        }
+      </p>
+
       <div className="relative flex items-center">
         <input
           type="text"

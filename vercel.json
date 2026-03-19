@@ -2,7 +2,22 @@
   "functions": {
     "app/api/scan/route.ts": {
       "maxDuration": 30
+    },
+    "app/api/bulk-scan/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/cron/scheduled-scan/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/v1/scan/route.ts": {
+      "maxDuration": 30
     }
   },
+  "crons": [
+    {
+      "path": "/api/cron/scheduled-scan",
+      "schedule": "0 9 * * *"
+    }
+  ],
   "buildCommand": "npm run build && cp -r node_modules/@sparticuz/chromium/bin .vercel/output/functions/app/api/scan/route.func/node_modules/@sparticuz/chromium/ 2>/dev/null || true"
 }

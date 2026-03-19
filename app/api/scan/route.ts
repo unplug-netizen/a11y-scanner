@@ -4,11 +4,19 @@ import { scanWebsite } from '@/lib/scan-server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { url } = body;
+    const { url, mode = 'quick' } = body;
 
     if (!url || typeof url !== 'string') {
       return NextResponse.json(
         { error: 'URL ist erforderlich' },
+        { status: 400 }
+      );
+    }
+
+    // Validate mode
+    if (mode !== 'quick' && mode !== 'deep') {
+      return NextResponse.json(
+        { error: 'Ungültiger Scan-Modus. Verwende "quick" oder "deep"' },
         { status: 400 }
       );
     }
@@ -31,7 +39,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const result = await scanWebsite(validatedUrl);
+    const result = await scanWebsite(validatedUrl, mode);
     
     return NextResponse.json(result);
   } catch (error) {

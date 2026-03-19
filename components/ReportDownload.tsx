@@ -28,6 +28,10 @@ export function ReportDownload({ result }: ReportDownloadProps) {
           { text: 'A11y Scanner Report', style: 'header' },
           { text: `URL: ${result.url}`, style: 'subheader' },
           { text: `Scan Datum: ${new Date(result.timestamp).toLocaleString('de-DE')}`, style: 'date' },
+          { text: `Scan-Modus: ${result.scanMode === 'deep' ? 'Deep Scan' : 'Quick Scan'}`, style: 'date' },
+          result.pagesScanned && result.pagesScanned > 1 
+            ? { text: `Geprüfte Seiten: ${result.pagesScanned}`, style: 'date' }
+            : {},
           { text: '', margin: [0, 10] },
           { text: 'Zusammenfassung', style: 'sectionHeader' },
           {
@@ -54,7 +58,7 @@ export function ReportDownload({ result }: ReportDownloadProps) {
           date: {
             fontSize: 12,
             color: '#666666',
-            margin: [0, 0, 0, 20]
+            margin: [0, 0, 0, 5]
           },
           sectionHeader: {
             fontSize: 16,
@@ -79,6 +83,15 @@ export function ReportDownload({ result }: ReportDownloadProps) {
             fontSize: 9,
             color: '#666666',
             italics: true
+          },
+          complianceHeader: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 15, 0, 10]
+          },
+          complianceItem: {
+            fontSize: 10,
+            margin: [0, 2, 0, 2]
           }
         },
         footer: (currentPage: number, pageCount: number) => ({
@@ -89,6 +102,57 @@ export function ReportDownload({ result }: ReportDownloadProps) {
           margin: [0, 20]
         })
       };
+
+      // Add Compliance Section
+      if (result.compliance) {
+        docDefinition.content.push({ text: 'Compliance Status', style: 'complianceHeader' });
+        
+        // WCAG 2.1
+        docDefinition.content.push({ text: 'WCAG 2.1:', style: 'violationHeader' });
+        docDefinition.content.push({
+          text: `Level A: ${result.compliance.wcag21.A ? '✓ Bestanden' : '✗ Nicht bestanden'}`,
+          style: 'complianceItem',
+          color: result.compliance.wcag21.A ? '#22c55e' : '#dc2626'
+        });
+        docDefinition.content.push({
+          text: `Level AA: ${result.compliance.wcag21.AA ? '✓ Bestanden' : '✗ Nicht bestanden'}`,
+          style: 'complianceItem',
+          color: result.compliance.wcag21.AA ? '#22c55e' : '#dc2626'
+        });
+        docDefinition.content.push({
+          text: `Level AAA: ${result.compliance.wcag21.AAA ? '✓ Bestanden' : '✗ Nicht bestanden'}`,
+          style: 'complianceItem',
+          color: result.compliance.wcag21.AAA ? '#22c55e' : '#dc2626'
+        });
+        
+        // WCAG 2.2
+        docDefinition.content.push({ text: 'WCAG 2.2:', style: 'violationHeader' });
+        docDefinition.content.push({
+          text: `Level A: ${result.compliance.wcag22.A ? '✓ Bestanden' : '✗ Nicht bestanden'}`,
+          style: 'complianceItem',
+          color: result.compliance.wcag22.A ? '#22c55e' : '#dc2626'
+        });
+        docDefinition.content.push({
+          text: `Level AA: ${result.compliance.wcag22.AA ? '✓ Bestanden' : '✗ Nicht bestanden'}`,
+          style: 'complianceItem',
+          color: result.compliance.wcag22.AA ? '#22c55e' : '#dc2626'
+        });
+        docDefinition.content.push({
+          text: `Level AAA: ${result.compliance.wcag22.AAA ? '✓ Bestanden' : '✗ Nicht bestanden'}`,
+          style: 'complianceItem',
+          color: result.compliance.wcag22.AAA ? '#22c55e' : '#dc2626'
+        });
+        
+        // Section 508
+        docDefinition.content.push({ text: 'Section 508:', style: 'violationHeader' });
+        docDefinition.content.push({
+          text: `${result.compliance.section508 ? '✓ Compliant' : '✗ Non-Compliant'}`,
+          style: 'complianceItem',
+          color: result.compliance.section508 ? '#22c55e' : '#dc2626'
+        });
+        
+        docDefinition.content.push({ text: '', margin: [0, 10] });
+      }
 
       if (result.violations.length > 0) {
         docDefinition.content.push({ text: 'Gefundene Verstöße', style: 'sectionHeader' });
