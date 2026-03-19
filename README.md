@@ -151,6 +151,32 @@ App läuft unter: http://localhost:3000
 - `PATCH /api/api-keys?id=:id` - Aktualisiert API Key
 - `DELETE /api/api-keys?id=:id` - Löscht API Key
 
+### Phase 4.3 Routes
+
+#### Enhanced AI Fixes
+- `POST /api/fix-enhanced` - Erweiterte KI-Fix-Vorschläge mit Code-Beispielen
+- Unterstützt Batch-Processing für mehrere Violations
+
+#### Screen Reader Simulation
+- `POST /api/screen-reader` - Simuliert Screen-Reader-Analyse
+- Prüft ARIA, Labels, Überschriften, Landmarks
+
+#### Mobile Accessibility
+- `POST /api/mobile` - Mobile Accessibility-Analyse
+- Touch-Target-Größen, Viewport, Zoom-Funktionalität
+
+#### Visual Overlay
+- `POST /api/visual-overlay` - Generiert Screenshots mit Fehler-Markierungen
+- Optional: Spezifische Viewport-Größe
+
+#### Regression Tracking
+- `GET /api/regression?action=history&url=...` - Scan-Historie für URL
+- `GET /api/regression?action=trend&url=...` - Trend-Analyse
+- `GET /api/regression?action=tracked-urls` - Überwachte URLs
+- `GET /api/regression?action=alerts` - Ungelesene Alerts
+- `POST /api/regression` - Scan tracken oder URL-Überwachung starten/stoppen
+- `PATCH /api/regression` - Alert als gelesen markieren
+
 ## API Nutzung
 
 ### Authentication
@@ -226,6 +252,54 @@ Oder nutze die `vercel.json`:
 }
 ```
 
+## Phase 4.3 Features
+
+### 🎯 Enhanced AI Fix Suggestions
+- **Detaillierte Erklärungen** mit WCAG-Referenzen
+- **Code-Beispiele** für HTML, React, Vue, Angular
+- **Komplexitäts-Bewertung** (einfach/mittel/komplex)
+- **Geschätzte Fix-Zeit**
+- **Vertrauens-Score** der KI
+- **Zusätzliche Ressourcen** (MDN, WCAG, Tools)
+
+### 🔊 Screen Reader Simulation
+- **ARIA-Analyse** - Validiert ARIA-Attribute und -Rollen
+- **Fehlende Labels** - Findet unbeschriftete Formularfelder
+- **Leere Überschriften** - Erkennt leere h1-h6 Elemente
+- **Überschriften-Hierarchie** - Prüft korrekte Struktur
+- **Link-Analyse** - Findet leere/generische Link-Texte
+- **Landmark-Analyse** - Prüft Hauptregionen (main, nav, etc.)
+- **Screen-Reader-Score** (0-100)
+
+### 📱 Mobile Accessibility
+- **Touch-Target-Analyse** - Mindestgröße 24x24px (WCAG AA)
+- **Viewport-Konfiguration** - Prüft Meta-Viewport-Tag
+- **Zoom-Funktionalität** - Erkennt user-scalable=no
+- **Touch-Action** - Prüft CSS touch-action
+- **Geräte-Simulation** - Testet verschiedene Viewports
+- **Mobile-Score** (0-100)
+
+### 🎨 Visual Highlight Overlay
+- **Screenshot mit Markierungen** - Wie WAVE Toolbar
+- **Farbkodierte Highlights**:
+  - 🔴 Kritisch (Rot)
+  - 🟠 Ernst (Orange)
+  - 🟡 Moderat (Gelb)
+  - 🔵 Gering (Blau)
+- **Legende** mit Issue-Count
+- **Full-Page Screenshots**
+- **Viewport-spezifische Overlays**
+
+### 📊 Scan History & Regression Tracking
+- **Trend-Analyse** - Verlauf über Zeit
+- **Regression-Erkennung** - Neue vs. behobene Verstöße
+- **URL-Tracking** - Kontinuierliche Überwachung
+- **Alerts** - Benachrichtigungen bei:
+  - Neuen kritischen Verstößen
+  - Verschlechterung des Trends
+  - Mehr als 5 neuen Verstößen
+- **Compliance-Score-Tracking**
+
 ## Datenbank Schema
 
 Das Schema in `supabase/schema.sql` enthält:
@@ -236,6 +310,15 @@ Das Schema in `supabase/schema.sql` enthält:
 - `scheduled_scan_history` - Historie geplanter Scans
 - `api_keys` - API Keys für Developer API
 - `api_usage_logs` - API Nutzungs-Logs
+
+### Phase 4.3 Tabellen (`supabase/phase43-schema.sql`):
+- `screen_reader_results` - Screen-Reader-Analyse-Ergebnisse
+- `mobile_accessibility_results` - Mobile Accessibility-Daten
+- `ai_fix_suggestions` - Erweiterte KI-Fix-Vorschläge
+- `visual_overlays` - Screenshot-Overlays mit Highlights
+- `scan_history_tracking` - Detaillierte Scan-Historie
+- `url_tracking` - URL-Überwachung & Statistiken
+- `accessibility_alerts` - Alert-System für Regressionen
 
 ## Lizenz
 
