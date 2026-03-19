@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['puppeteer'],
-  experimental: {
-    turbopack: false,
+  webpack: (config) => {
+    return config;
   },
 };
 
