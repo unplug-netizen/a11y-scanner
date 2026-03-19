@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scanWebsite } from '@/lib/scan-server';
 import { simulateScreenReader } from '@/lib/screen-reader-simulation';
-import { analyzeMobileAccessibility } from '@/lib/mobile-accessibility';
 import { generateVisualOverlay } from '@/lib/visual-overlay';
 import { generateBatchFixSuggestions } from '@/lib/openai-enhanced';
 import { CompleteScanResult, A11yViolation } from '@/types';
@@ -17,7 +16,6 @@ export async function POST(request: NextRequest) {
     
     const {
       includeScreenReader = true,
-      includeMobile = true,
       includeVisualOverlay = true,
       includeEnhancedFixes = true,
       maxFixes = 10
@@ -76,20 +74,6 @@ export async function POST(request: NextRequest) {
           })
           .catch(err => {
             console.error('Screen reader analysis failed:', err);
-          })
-      );
-    }
-
-    // Mobile Accessibility
-    if (includeMobile) {
-      analysisPromises.push(
-        analyzeMobileAccessibility(validatedUrl)
-          .then(result => {
-            completeResult.mobileResult = result;
-            console.log('Mobile analysis completed');
-          })
-          .catch(err => {
-            console.error('Mobile analysis failed:', err);
           })
       );
     }

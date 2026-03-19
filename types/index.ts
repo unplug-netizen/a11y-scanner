@@ -316,80 +316,6 @@ export interface LandmarkIssue {
 }
 
 // ============================================
-// Phase 4.3: Mobile Accessibility
-// ============================================
-
-export interface MobileAccessibilityResult {
-  url: string;
-  timestamp: string;
-  touchTargets: TouchTarget[];
-  nonCompliantTargets: TouchTarget[];
-  viewportIssues: ViewportIssue[];
-  viewportConfig: {
-    width: string;
-    initialScale: string;
-    userScalable: boolean;
-    maximumScale: string | null;
-    minimumScale: string | null;
-  } | null;
-  zoomIssues: ZoomIssue[];
-  touchActionIssues: TouchActionIssue[];
-  mobileWcagIssues: MobileWCAGIssue[];
-  deviceTests: DeviceTest[];
-  mobileScore: number;
-  summary: {
-    totalTargets: number;
-    nonCompliantCount: number;
-    criticalIssues: number;
-    warningIssues: number;
-    infoIssues: number;
-  };
-  recommendations: string[];
-}
-
-export interface TouchTarget {
-  element: string;
-  html: string;
-  width: number;
-  height: number;
-  compliant: boolean;
-  recommendedSize: string;
-  x: number;
-  y: number;
-}
-
-export interface ViewportIssue {
-  issue: string;
-  current: string;
-  recommended: string;
-}
-
-export interface ZoomIssue {
-  issue: string;
-  meta: string;
-  suggestion: string;
-}
-
-export interface TouchActionIssue {
-  element: string;
-  issue: string;
-  suggestion: string;
-}
-
-export interface MobileWCAGIssue {
-  criterion: string;
-  issue: string;
-  impact: 'critical' | 'serious' | 'moderate' | 'minor';
-}
-
-export interface DeviceTest {
-  device: string;
-  width: number;
-  height: number;
-  issues: string[];
-}
-
-// ============================================
 // Phase 4.3: Visual Overlay
 // ============================================
 
@@ -470,7 +396,6 @@ export interface URLTrackingStatus {
 
 export interface CompleteScanResult extends ScanResult {
   screenReaderResult?: ScreenReaderResult;
-  mobileResult?: MobileAccessibilityResult;
   visualOverlay?: VisualOverlayResult;
   regressionAnalysis?: RegressionAnalysis;
   enhancedFixes?: EnhancedFixSuggestion[];

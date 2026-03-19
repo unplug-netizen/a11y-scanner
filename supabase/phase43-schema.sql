@@ -1,5 +1,6 @@
 -- ============================================
--- Phase 4.3: Advanced Accessibility Features
+-- Phase 4.3: Advanced Accessibility Features (REVISED)
+-- Mobile Accessibility entfernt
 -- ============================================
 
 -- ============================================
@@ -59,66 +60,7 @@ CREATE POLICY "Users can create own screen reader results" ON screen_reader_resu
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
--- 2. Mobile Accessibility Results
--- ============================================
-
-CREATE TABLE IF NOT EXISTS mobile_accessibility_results (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  scan_id UUID NOT NULL REFERENCES scans(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  
-  -- Touch Target Analysis
-  touch_targets JSONB DEFAULT '[]'::jsonb,
-  -- Structure: [{ 
-  --   element: string, 
-  --   html: string, 
-  --   width: number, 
-  --   height: number, 
-  --   compliant: boolean,
-  --   recommendedSize: string 
-  -- }]
-  
-  -- Viewport Configuration
-  viewport_issues JSONB DEFAULT '[]'::jsonb,
-  -- Structure: [{ issue: string, current: string, recommended: string }]
-  
-  -- Zoom/Scale Issues
-  zoom_issues JSONB DEFAULT '[]'::jsonb,
-  -- Structure: [{ issue: string, meta: string, suggestion: string }]
-  
-  -- Touch Action Issues
-  touch_action_issues JSONB DEFAULT '[]'::jsonb,
-  -- Structure: [{ element: string, issue: string, suggestion: string }]
-  
-  -- Mobile-Specific WCAG Issues
-  mobile_wcag_issues JSONB DEFAULT '[]'::jsonb,
-  -- Structure: [{ criterion: string, issue: string, impact: string }]
-  
-  -- Device Simulation Results
-  device_tests JSONB DEFAULT '[]'::jsonb,
-  -- Structure: [{ device: string, width: number, height: number, issues: [] }]
-  
-  -- Overall Score (0-100)
-  mobile_score INTEGER,
-  
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Index
-CREATE INDEX IF NOT EXISTS idx_mobile_scan_id ON mobile_accessibility_results(scan_id);
-CREATE INDEX IF NOT EXISTS idx_mobile_user_id ON mobile_accessibility_results(user_id);
-
--- RLS
-ALTER TABLE mobile_accessibility_results ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can view own mobile results" ON mobile_accessibility_results
-  FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can create own mobile results" ON mobile_accessibility_results
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
--- ============================================
--- 3. AI Fix Suggestions (Enhanced)
+-- 2. AI Fix Suggestions (Enhanced)
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS ai_fix_suggestions (
@@ -186,7 +128,7 @@ CREATE POLICY "Users can update own AI fixes" ON ai_fix_suggestions
   FOR UPDATE USING (auth.uid() = user_id);
 
 -- ============================================
--- 4. Visual Highlight Overlays (Screenshots with Annotations)
+-- 3. Visual Highlight Overlays (Screenshots with Annotations)
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS visual_overlays (
@@ -237,7 +179,7 @@ CREATE POLICY "Users can create own visual overlays" ON visual_overlays
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
--- 5. Scan History & Regression Tracking
+-- 4. Scan History & Regression Tracking
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS scan_history_tracking (
@@ -301,7 +243,7 @@ CREATE POLICY "Users can create own scan history" ON scan_history_tracking
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
--- 6. URL Tracking (for continuous monitoring)
+-- 5. URL Tracking (for continuous monitoring)
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS url_tracking (
@@ -360,7 +302,7 @@ CREATE POLICY "Users can delete own URL tracking" ON url_tracking
   FOR DELETE USING (auth.uid() = user_id);
 
 -- ============================================
--- 7. Alerts & Notifications
+-- 6. Alerts & Notifications
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS accessibility_alerts (

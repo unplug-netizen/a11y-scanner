@@ -161,10 +161,6 @@ App läuft unter: http://localhost:3000
 - `POST /api/screen-reader` - Simuliert Screen-Reader-Analyse
 - Prüft ARIA, Labels, Überschriften, Landmarks
 
-#### Mobile Accessibility
-- `POST /api/mobile` - Mobile Accessibility-Analyse
-- Touch-Target-Größen, Viewport, Zoom-Funktionalität
-
 #### Visual Overlay
 - `POST /api/visual-overlay` - Generiert Screenshots mit Fehler-Markierungen
 - Optional: Spezifische Viewport-Größe
@@ -271,14 +267,6 @@ Oder nutze die `vercel.json`:
 - **Landmark-Analyse** - Prüft Hauptregionen (main, nav, etc.)
 - **Screen-Reader-Score** (0-100)
 
-### 📱 Mobile Accessibility
-- **Touch-Target-Analyse** - Mindestgröße 24x24px (WCAG AA)
-- **Viewport-Konfiguration** - Prüft Meta-Viewport-Tag
-- **Zoom-Funktionalität** - Erkennt user-scalable=no
-- **Touch-Action** - Prüft CSS touch-action
-- **Geräte-Simulation** - Testet verschiedene Viewports
-- **Mobile-Score** (0-100)
-
 ### 🎨 Visual Highlight Overlay
 - **Screenshot mit Markierungen** - Wie WAVE Toolbar
 - **Farbkodierte Highlights**:
@@ -313,7 +301,6 @@ Das Schema in `supabase/schema.sql` enthält:
 
 ### Phase 4.3 Tabellen (`supabase/phase43-schema.sql`):
 - `screen_reader_results` - Screen-Reader-Analyse-Ergebnisse
-- `mobile_accessibility_results` - Mobile Accessibility-Daten
 - `ai_fix_suggestions` - Erweiterte KI-Fix-Vorschläge
 - `visual_overlays` - Screenshot-Overlays mit Highlights
 - `scan_history_tracking` - Detaillierte Scan-Historie
