@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { scanWebsite } from '@/lib/scan-server';
+import { queueNotification, sendSlackNotification, sendEmailNotification } from '@/lib/notifications';
 
 // Create admin client
 const createAdminClient = () => {
@@ -115,13 +116,56 @@ export async function GET(request: NextRequest) {
           })
           .eq('id', scheduledScan.id);
 
-        // Send email notification if enabled and there are new issues
-        if (scheduledScan.email_notifications && 
-            (!scheduledScan.notify_on_new_issues_only || newViolations.length > 0)) {
-          // Email sending would be implemented here
-          // For now, we just log it
-          console.log(`Would send email to user ${scheduledScan.user_id} about scan ${scheduledScan.id}`);
-          console.log(`New violations: ${newViolations.length}, Fixed: ${fixedViolations.length}`);
+        // Send notifications if enabled
+        try {
+          // Get user integrations
+          const { data: integrations } = await supabase
+            .from('user_integrations')
+            .select('*')
+            .eq('user_id', scheduledScan.user_id)
+            .single();
+
+          if (integrations) {
+            const shouldNotify = integrations.notify_on_scheduled_scan !== false &&
+              (!integrations.notify_on_new_issues || newViolations.length > 0);
+
+            if (shouldNotify) {
+              // Send Slack notification
+              if (integrations.slack_enabled && integrations.slack_webhook_url) {
+                await sendSlackNotification(integrations.slack_webhook_url, {
+                  type: newViolations.length > 0 ? 'new_issues' : 'scheduled_scan',
+                  userId: scheduledScan.user_id,
+                  data: {
+                    scanName: scheduledScan.name,
+                    url: scheduledScan.url,
+                    violationCount: scanResult.violations.length,
+                    newViolations: newViolations.length,
+                    fixedViolations: fixedViolations.length,
+                    scheduledScanId: scheduledScan.id,
+                  },
+                });
+              }
+
+              // Send Email notification
+              if (integrations.email_enabled && integrations.email_address) {
+                await sendEmailNotification(integrations.email_address, {
+                  type: newViolations.length > 0 ? 'new_issues' : 'scheduled_scan',
+                  userId: scheduledScan.user_id,
+                  data: {
+                    scanName: scheduledScan.name,
+                    url: scheduledScan.url,
+                    violationCount: scanResult.violations.length,
+                    newViolations: newViolations.length,
+                    fixedViolations: fixedViolations.length,
+                    scheduledScanId: scheduledScan.id,
+                  },
+                });
+              }
+            }
+          }
+        } catch (notifyError) {
+          console.error('Error sending notifications:', notifyError);
+          // Don't fail the scan if notifications fail
         }
 
         results.push({

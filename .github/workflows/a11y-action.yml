@@ -1,0 +1,69 @@
+# A11y Scanner - GitHub Action
+
+Dieses GitHub Action führt Accessibility-Scans durch und kommentiert die Ergebnisse direkt im PR.
+
+## Usage
+
+```yaml
+name: Accessibility Check
+
+on:
+  pull_request:
+    paths:
+      - '**.html'
+      - '**.tsx'
+      - '**.jsx'
+      - '**.vue'
+
+jobs:
+  a11y-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run A11y Scanner
+        uses: a11y-scanner/action@v1
+        with:
+          url: 'https://preview-url.vercel.app'
+          fail-on: 'serious'  # critical, serious, moderate, minor
+          comment-on-pr: true
+        env:
+          A11Y_API_KEY: ${{ secrets.A11Y_API_KEY }}
+```
+
+## Inputs
+
+| Input | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `url` | ✅ | - | URL to scan |
+| `fail-on` | ❌ | `serious` | Minimum impact level to fail the check |
+| `comment-on-pr` | ❌ | `true` | Comment results on PR |
+| `wait-for-deployment` | ❌ | `false` | Wait for Vercel deployment |
+
+## Outputs
+
+| Output | Description |
+|--------|-------------|
+| `violations` | Number of violations found |
+| `report-url` | URL to full report |
+
+## Beispiel mit Vercel Preview
+
+```yaml
+name: Accessibility Check
+
+on: [deployment_status]
+
+jobs:
+  a11y-check:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run A11y Scanner
+        uses: a11y-scanner/action@v1
+        with:
+          url: ${{ github.event.deployment_status.target_url }}
+          fail-on: 'serious'
+        env:
+          A11Y_API_KEY: ${{ secrets.A11Y_API_KEY }}
+```

@@ -12,8 +12,15 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode via class */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* System preference fallback */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
@@ -24,7 +31,7 @@ body {
   color: var(--foreground);
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Light mode */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -43,8 +50,43 @@ body {
   background: #a1a1a1;
 }
 
+/* Custom scrollbar - Dark mode */
+.dark ::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a;
+}
+
 /* Code block styling */
 pre {
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* Dark mode transitions */
+* {
+  transition-property: background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus visible styles */
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: #3b82f6;
 }

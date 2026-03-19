@@ -60,6 +60,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       password,
     });
+    
+    if (!error) {
+      // Mark as new user for onboarding
+      localStorage.setItem('a11y-new-user', 'true');
+      localStorage.removeItem('a11y-onboarding-seen');
+    }
+    
     return { error };
   };
 

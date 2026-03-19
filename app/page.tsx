@@ -13,6 +13,10 @@ import { ComplianceBadge } from '@/components/ComplianceBadge';
 import { BulkScanModal, BulkScanHistory } from '@/components/BulkScan';
 import { ScheduledScanModal } from '@/components/ScheduledScan';
 import { ApiKeysModal } from '@/components/ApiKeys';
+import { IntegrationsModal } from '@/components/Integrations';
+import { DashboardModal } from '@/components/Dashboard';
+import { OnboardingModal } from '@/components/Onboarding';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { 
   Loader2, 
   AlertCircle, 
@@ -24,7 +28,9 @@ import {
   Zap,
   BarChart3,
   Calendar,
-  Key
+  Key,
+  Bell,
+  LayoutDashboard
 } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 
@@ -38,7 +44,21 @@ export default function Home() {
   const [showBulkScanModal, setShowBulkScanModal] = useState(false);
   const [showScheduledScanModal, setShowScheduledScanModal] = useState(false);
   const [showApiKeysModal, setShowApiKeysModal] = useState(false);
+  const [showIntegrationsModal, setShowIntegrationsModal] = useState(false);
+  const [showDashboardModal, setShowDashboardModal] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const { isAuthenticated, user, session } = useAuth();
+
+  // Show onboarding for new users
+  useEffect(() => {
+    if (isAuthenticated) {
+      const hasSeenOnboarding = localStorage.getItem('a11y-onboarding-seen');
+      const isNewUser = localStorage.getItem('a11y-new-user');
+      if (!hasSeenOnboarding && isNewUser === 'true') {
+        setShowOnboarding(true);
+      }
+    }
+  }, [isAuthenticated]);
 
   // Load scan count from localStorage on mount
   useEffect(() => {
@@ -167,11 +187,28 @@ export default function Home() {
                   <Key className="w-4 h-4" />
                   <span className="text-sm">API</span>
                 </button>
+                <button
+                  onClick={() => setShowIntegrationsModal(true)}
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Integrationen"
+                >
+                  <Bell className="w-4 h-4" />
+                  <span className="text-sm">Integrationen</span>
+                </button>
+                <button
+                  onClick={() => setShowDashboardModal(true)}
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Dashboard"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="text-sm">Dashboard</span>
+                </button>
                 <div className="w-px h-6 bg-gray-300 mx-1 hidden sm:block" />
               </>
             )}
             <ScanHistory onLoadScan={handleLoadScan} />
             {isAuthenticated && <BulkScanHistory />}
+            <ThemeToggle />
             <UserMenu />
           </div>
         </div>
@@ -366,6 +403,9 @@ export default function Home() {
       <BulkScanModal isOpen={showBulkScanModal} onClose={() => setShowBulkScanModal(false)} />
       <ScheduledScanModal isOpen={showScheduledScanModal} onClose={() => setShowScheduledScanModal(false)} />
       <ApiKeysModal isOpen={showApiKeysModal} onClose={() => setShowApiKeysModal(false)} />
+      <IntegrationsModal isOpen={showIntegrationsModal} onClose={() => setShowIntegrationsModal(false)} />
+      <DashboardModal isOpen={showDashboardModal} onClose={() => setShowDashboardModal(false)} />
+      <OnboardingModal isOpen={showOnboarding} onClose={() => setShowOnboarding(false)} />
 
       <Footer />
     </main>
