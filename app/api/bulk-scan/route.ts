@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { scanWebsite } from '@/lib/scan-server';
-import { BulkScanItemResult, AggregateReport, CommonViolation } from '@/types';
+import { BulkScanItemResult, AggregateReport, CommonViolation, BulkScanResult } from '@/types';
+import { triggerBulkScanCompleted } from '@/lib/webhooks';
 
 // Create admin client for database operations
 const createAdminClient = () => {
@@ -351,6 +352,42 @@ async function processBulkScan(
       completed_at: new Date().toISOString(),
     })
     .eq('id', bulkScanId);
+
+  // Get user_id for webhook trigger
+  const { data: bulkScanData } = await supabase
+    .from('bulk_scans')
+    .select('user_id')
+    .eq('id', bulkScanId)
+    .single();
+
+  if (bulkScanData?.user_id) {
+    // Fetch complete bulk scan for webhook
+    const { data: completeBulkScan } = await supabase
+      .from('bulk_scans')
+      .select('*')
+      .eq('id', bulkScanId)
+      .single();
+
+    if (completeBulkScan) {
+      const bulkScanResult: BulkScanResult = {
+        id: completeBulkScan.id,
+        userId: completeBulkScan.user_id,
+        name: completeBulkScan.name,
+        urls: completeBulkScan.urls,
+        status: completeBulkScan.status,
+        results: completeBulkScan.results,
+        totalUrls: completeBulkScan.total_urls,
+        completedUrls: completeBulkScan.completed_urls,
+        failedUrls: completeBulkScan.failed_urls,
+        aggregateReport: completeBulkScan.aggregate_report,
+        createdAt: completeBulkScan.created_at,
+        completedAt: completeBulkScan.completed_at,
+      };
+
+      // Trigger webhook asynchronously
+      triggerBulkScanCompleted(bulkScanData.user_id, bulkScanResult).catch(console.error);
+    }
+  }
 }
 
 function generateAggregateReport(results: BulkScanItemResult[]): AggregateReport {

@@ -1,52 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { scanWebsite } from '@/lib/scan-server';
+import { 
+  successResponse, 
+  errorResponse, 
+  validationErrorResponse,
+  withApiHandler,
+  ScanErrors 
+} from '@/lib/api-response';
+import { logger } from '@/lib/logger';
 
-export async function POST(request: NextRequest) {
+export const POST = withApiHandler(async (request: NextRequest) => {
+  const body = await request.json();
+  const { url, mode = 'quick' } = body;
+
+  // Validate URL presence
+  if (!url || typeof url !== 'string') {
+    return ScanErrors.URL_REQUIRED();
+  }
+
+  // Validate mode
+  if (mode !== 'quick' && mode !== 'deep') {
+    return ScanErrors.INVALID_MODE();
+  }
+
+  // Validate and normalize URL
+  let validatedUrl: string;
   try {
-    const body = await request.json();
-    const { url, mode = 'quick' } = body;
-
-    if (!url || typeof url !== 'string') {
-      return NextResponse.json(
-        { error: 'URL ist erforderlich' },
-        { status: 400 }
-      );
-    }
-
-    // Validate mode
-    if (mode !== 'quick' && mode !== 'deep') {
-      return NextResponse.json(
-        { error: 'Ungültiger Scan-Modus. Verwende "quick" oder "deep"' },
-        { status: 400 }
-      );
-    }
-
-    // Validate URL
-    let validatedUrl: string;
+    const urlObj = new URL(url);
+    validatedUrl = urlObj.toString();
+  } catch {
+    // Try adding https://
     try {
-      const urlObj = new URL(url);
+      const urlObj = new URL(`https://${url}`);
       validatedUrl = urlObj.toString();
     } catch {
-      // Try adding https://
-      try {
-        const urlObj = new URL(`https://${url}`);
-        validatedUrl = urlObj.toString();
-      } catch {
-        return NextResponse.json(
-          { error: 'Ungültige URL' },
-          { status: 400 }
-        );
-      }
+      return ScanErrors.INVALID_URL();
     }
-
-    const result = await scanWebsite(validatedUrl, mode);
-    
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error('Scan API Error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Scan fehlgeschlagen' },
-      { status: 500 }
-    );
   }
-}
+
+  logger.info('Starting scan', { url: validatedUrl, mode });
+  
+  const result = await scanWebsite(validatedUrl, mode);
+  
+  return successResponse(result);
+}, { operation: 'POST /api/scan' });

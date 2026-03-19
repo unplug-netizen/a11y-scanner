@@ -34,6 +34,7 @@ export interface PageResult {
   passes: number;
   incomplete: number;
   inapplicable: number;
+  scanTimeMs?: number;
 }
 
 export interface ScanResult {

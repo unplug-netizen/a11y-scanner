@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { scanWebsite } from '@/lib/scan-server';
 import { validateApiKey, logApiUsage, ApiAuthContext } from '@/lib/api-auth';
 import { createClient } from '@supabase/supabase-js';
+import { triggerScanCompleted, triggerIssueDetected } from '@/lib/webhooks';
 
 const createAdminClient = () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -74,9 +75,12 @@ export async function POST(request: NextRequest) {
 
     // For quick scans, run immediately
     // For deep scans, queue and return job ID (simplified: just run it)
+    const scanStartTime = Date.now();
     const result = await scanWebsite(validatedUrl, mode);
+    const scanDurationMs = Date.now() - scanStartTime;
 
     // Save scan result
+    let scanId: string | undefined;
     if (supabase) {
       const { data: scanRecord } = await supabase
         .from('scans')
@@ -89,11 +93,23 @@ export async function POST(request: NextRequest) {
         .select('id')
         .single();
 
+      scanId = scanRecord?.id;
+
+      // Trigger webhooks asynchronously (don't await)
+      if (scanId) {
+        triggerScanCompleted(context.userId, scanId, result, scanDurationMs).catch(console.error);
+        
+        // Trigger issue.detected for critical/serious violations
+        result.violations.forEach(violation => {
+          triggerIssueDetected(context.userId, scanId!, validatedUrl, violation).catch(console.error);
+        });
+      }
+
       const responseTime = Date.now() - startTime;
       await logApiUsage(context, request, 200, responseTime);
 
       return NextResponse.json({
-        id: scanRecord?.id,
+        id: scanId,
         url: validatedUrl,
         status: 'completed',
         result: {

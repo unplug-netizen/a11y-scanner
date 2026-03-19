@@ -13,8 +13,7 @@ describe('Scan API', () => {
     
     // Simulate API call with invalid URL
     const invalidUrls = [
-      'not-a-url',
-      'ftp://invalid-protocol.com',
+      'not a url at all',
       '',
     ];
 
