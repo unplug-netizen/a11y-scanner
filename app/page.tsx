@@ -156,17 +156,17 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Header with User Menu */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6 text-blue-600" />
+            <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             <span className="font-semibold text-gray-900 dark:text-white">A11y Scanner</span>
           </div>
           <div className="flex items-center gap-2">
             {!isAuthenticated && (
-              <span className="text-sm text-gray-500 hidden sm:block mr-4">
+              <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block mr-4">
                 {remainingScans} von 3 Scans übrig heute
               </span>
             )}
@@ -177,7 +177,7 @@ export default function Home() {
                 <RegressionButton onClick={() => setShowRegressionModal(true)} />
                 <button
                   onClick={() => setShowBulkScanModal(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Bulk Scan"
                 >
                   <BarChart3 className="w-4 h-4" />
@@ -185,7 +185,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => setShowScheduledScanModal(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Geplante Scans"
                 >
                   <Calendar className="w-4 h-4" />
@@ -193,7 +193,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => setShowApiKeysModal(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="API Keys"
                 >
                   <Key className="w-4 h-4" />
@@ -201,7 +201,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => setShowIntegrationsModal(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Integrationen"
                 >
                   <Bell className="w-4 h-4" />
@@ -209,13 +209,13 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => setShowDashboardModal(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Dashboard"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   <span className="text-sm">Dashboard</span>
                 </button>
-                <div className="w-px h-6 bg-gray-300 mx-1 hidden sm:block" />
+                <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1 hidden sm:block" />
               </>
             )}
             <ScanHistory onLoadScan={handleLoadScan} />
@@ -229,17 +229,17 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Hero */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             🔍 A11y Scanner
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Überprüfe deine Website auf WCAG-Konformität mit KI-gestützten Fix-Vorschlägen.
           </p>
           {!isAuthenticated && (
             <div className="mt-4">
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full text-sm text-blue-700 hover:bg-blue-100 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full text-sm text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
               >
                 <Shield className="w-4 h-4" />
                 Melde dich an für unbegrenzte Scans & Scan-History
@@ -252,51 +252,51 @@ export default function Home() {
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               <button
                 onClick={() => setShowScreenReaderModal(true)}
-                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all text-left"
               >
-                <Volume2 className="w-8 h-8 text-blue-600 mb-3" />
-                <h3 className="font-semibold text-gray-900">Screen Reader</h3>
-                <p className="text-sm text-gray-500 mt-1">Simuliere Screen Reader Erfahrung</p>
+                <Volume2 className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Screen Reader</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Simuliere Screen Reader Erfahrung</p>
               </button>
               <button
                 onClick={() => setShowVisualOverlayModal(true)}
-                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all text-left"
+                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md transition-all text-left"
               >
-                <Eye className="w-8 h-8 text-purple-600 mb-3" />
-                <h3 className="font-semibold text-gray-900">Visual Overlay</h3>
-                <p className="text-sm text-gray-500 mt-1">Screenshot mit markierten Problemen</p>
+                <Eye className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-3" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Visual Overlay</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Screenshot mit markierten Problemen</p>
               </button>
               <button
                 onClick={() => setShowRegressionModal(true)}
-                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all text-left"
+                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-green-300 dark:hover:border-green-600 hover:shadow-md transition-all text-left"
               >
-                <Activity className="w-8 h-8 text-green-600 mb-3" />
-                <h3 className="font-semibold text-gray-900">Regression Tracking</h3>
-                <p className="text-sm text-gray-500 mt-1">Verfolge Änderungen über Zeit</p>
+                <Activity className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Regression Tracking</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Verfolge Änderungen über Zeit</p>
               </button>
               <button
                 onClick={() => setShowBulkScanModal(true)}
-                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all text-left"
               >
-                <BarChart3 className="w-8 h-8 text-blue-600 mb-3" />
-                <h3 className="font-semibold text-gray-900">Bulk Scan</h3>
-                <p className="text-sm text-gray-500 mt-1">Bis zu 50 URLs auf einmal scannen</p>
+                <BarChart3 className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Bulk Scan</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Bis zu 50 URLs auf einmal scannen</p>
               </button>
               <button
                 onClick={() => setShowScheduledScanModal(true)}
-                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all text-left"
               >
-                <Calendar className="w-8 h-8 text-green-600 mb-3" />
-                <h3 className="font-semibold text-gray-900">Geplante Scans</h3>
-                <p className="text-sm text-gray-500 mt-1">Automatisch täglich/wöchentlich/monatlich</p>
+                <Calendar className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Geplante Scans</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Automatisch täglich/wöchentlich/monatlich</p>
               </button>
               <button
                 onClick={() => setShowApiKeysModal(true)}
-                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all text-left"
               >
-                <Key className="w-8 h-8 text-purple-600 mb-3" />
-                <h3 className="font-semibold text-gray-900">Developer API</h3>
-                <p className="text-sm text-gray-500 mt-1">API-Key basierter Zugriff</p>
+                <Key className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-3" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Developer API</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">API-Key basierter Zugriff</p>
               </button>
             </div>
           )}
@@ -307,12 +307,12 @@ export default function Home() {
 
         {/* Error */}
         {error && (
-          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600" />
+          <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
             <div className="flex-1">
-              <p className="text-red-700">{error}</p>
+              <p className="text-red-700 dark:text-red-400">{error}</p>
               {showLimitWarning && (
-                <p className="text-sm text-red-600 mt-1">
+                <p className="text-sm text-red-600 dark:text-red-500 mt-1">
                   Erstelle einen kostenlosen Account für unbegrenzte Scans.
                 </p>
               )}
@@ -323,10 +323,10 @@ export default function Home() {
         {/* Loading */}
         {loading && (
           <div className="mt-12 flex flex-col items-center justify-center">
-            <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-            <p className="mt-4 text-gray-600">Website wird analysiert...</p>
+            <Loader2 className="w-12 h-12 text-blue-600 dark:text-blue-400 animate-spin" />
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Website wird analysiert...</p>
             {result?.scanMode === 'deep' && (
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
                 Deep Scan kann bis zu 2 Minuten dauern...
               </p>
             )}
@@ -337,28 +337,28 @@ export default function Home() {
         {result && !loading && (
           <div className="mt-12 space-y-6">
             {/* Summary */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900">
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
                     Scan-Ergebnisse
                   </h2>
-                  <p className="text-gray-500 mt-1">{result.url}</p>
+                  <p className="text-gray-500 dark:text-gray-400 mt-1">{result.url}</p>
                   {result.scanMode && (
                     <div className="flex items-center gap-2 mt-2">
                       {result.scanMode === 'quick' ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs rounded-full">
                           <Zap className="w-3 h-3" />
                           Quick Scan
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded-full">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs rounded-full">
                           <Layers className="w-3 h-3" />
                           Deep Scan
                         </span>
                       )}
                       {result.pagesScanned && result.pagesScanned > 1 && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
                           ({result.pagesScanned} Seiten geprüft)
                         </span>
                       )}
@@ -370,29 +370,29 @@ export default function Home() {
 
               {/* Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 bg-red-50 rounded-lg border border-red-100">
-                  <div className="text-2xl font-bold text-red-600">{criticalCount}</div>
-                  <div className="text-sm text-red-700">Kritisch</div>
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800">
+                  <div className="text-2xl font-bold text-red-600 dark:text-red-400">{criticalCount}</div>
+                  <div className="text-sm text-red-700 dark:text-red-400">Kritisch</div>
                 </div>
-                <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
-                  <div className="text-2xl font-bold text-orange-600">{seriousCount}</div>
-                  <div className="text-sm text-orange-700">Ernst</div>
+                <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
+                  <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{seriousCount}</div>
+                  <div className="text-sm text-orange-700 dark:text-orange-400">Ernst</div>
                 </div>
-                <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-100">
-                  <div className="text-2xl font-bold text-yellow-600">{moderateCount}</div>
-                  <div className="text-sm text-yellow-700">Mittel</div>
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-100 dark:border-yellow-800">
+                  <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{moderateCount}</div>
+                  <div className="text-sm text-yellow-700 dark:text-yellow-400">Mittel</div>
                 </div>
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-600">{minorCount}</div>
-                  <div className="text-sm text-blue-700">Gering</div>
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{minorCount}</div>
+                  <div className="text-sm text-blue-700 dark:text-blue-400">Gering</div>
                 </div>
               </div>
 
               {/* Success Message */}
               {result.violations.length === 0 && (
-                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  <p className="text-green-700">
+                <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <p className="text-green-700 dark:text-green-400">
                     🎉 Keine Verstöße gefunden! Deine Website ist vollständig barrierefrei.
                   </p>
                 </div>
@@ -407,7 +407,7 @@ export default function Home() {
             {/* Violations */}
             {result.violations.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <AlertCircle className="w-5 h-5" />
                   Gefundene Verstöße ({result.violations.length})
                 </h3>
@@ -419,9 +419,9 @@ export default function Home() {
             )}
 
             {/* Info */}
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-              <div className="text-sm text-blue-700">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg flex items-start gap-3">
+              <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+              <div className="text-sm text-blue-700 dark:text-blue-400">
                 <p className="font-medium">Hinweis</p>
                 <p>
                   Dieser Scan prüft automatisierte WCAG-Kriterien. Manuelle Prüfungen

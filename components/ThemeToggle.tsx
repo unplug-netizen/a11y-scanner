@@ -14,7 +14,7 @@ export function ThemeToggle() {
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
-      <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+      <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
         <div className="p-2 rounded-md">
           <Sun className="w-4 h-4 text-gray-400" />
         </div>
@@ -29,12 +29,12 @@ function ThemeToggleInner() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+    <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-gray-700">
       <button
         onClick={() => setTheme('light')}
         className={`p-2 rounded-md transition-all ${
           theme === 'light'
-            ? 'bg-white dark:bg-gray-700 shadow-sm text-amber-500'
+            ? 'bg-white dark:bg-gray-600 shadow-sm text-amber-500'
             : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
         }`}
         title="Light mode"
@@ -45,7 +45,7 @@ function ThemeToggleInner() {
         onClick={() => setTheme('dark')}
         className={`p-2 rounded-md transition-all ${
           theme === 'dark'
-            ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-400'
+            ? 'bg-white dark:bg-gray-600 shadow-sm text-blue-400'
             : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
         }`}
         title="Dark mode"
@@ -56,7 +56,7 @@ function ThemeToggleInner() {
         onClick={() => setTheme('system')}
         className={`p-2 rounded-md transition-all ${
           theme === 'system'
-            ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-500'
+            ? 'bg-white dark:bg-gray-600 shadow-sm text-purple-500'
             : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
         }`}
         title="System preference"
