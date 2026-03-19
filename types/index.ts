@@ -214,3 +214,264 @@ export interface ApiScanResponse {
   error?: string;
   createdAt: string;
 }
+
+// ============================================
+// Phase 4.3: Enhanced AI Fix Suggestions
+// ============================================
+
+export interface EnhancedFixSuggestion {
+  violationId: string;
+  violationType: string;
+  impact: string;
+  originalCode: string;
+  originalHtml: string;
+  fixedCode: string;
+  explanation: string;
+  explanationDetailed: string;
+  codeExamples: CodeExample[];
+  wcagCriterion: string;
+  wcagLevel: string;
+  wcagUrl: string;
+  resources: Resource[];
+  confidenceScore: number;
+  complexity: 'simple' | 'moderate' | 'complex';
+  estimatedTime: string;
+}
+
+export interface CodeExample {
+  title: string;
+  code: string;
+  language: 'html' | 'css' | 'js' | 'react' | 'vue' | 'angular';
+}
+
+export interface Resource {
+  title: string;
+  url: string;
+  type: 'mdn' | 'wcag' | 'article' | 'tool';
+}
+
+// ============================================
+// Phase 4.3: Screen Reader Simulation
+// ============================================
+
+export interface ScreenReaderResult {
+  url: string;
+  timestamp: string;
+  ariaIssues: ARIAIssue[];
+  missingLabels: MissingLabel[];
+  emptyHeadings: EmptyHeading[];
+  headingStructureIssues: HeadingStructureIssue[];
+  formIssues: FormIssue[];
+  linkIssues: LinkIssue[];
+  landmarkIssues: LandmarkIssue[];
+  screenReaderScore: number;
+  summary: {
+    criticalCount: number;
+    warningCount: number;
+    infoCount: number;
+    totalIssues: number;
+  };
+}
+
+export interface ARIAIssue {
+  element: string;
+  html: string;
+  issue: string;
+  severity: 'critical' | 'warning' | 'info';
+  suggestion: string;
+}
+
+export interface MissingLabel {
+  element: string;
+  html: string;
+  context: string;
+}
+
+export interface EmptyHeading {
+  level: number;
+  html: string;
+  text: string;
+}
+
+export interface HeadingStructureIssue {
+  issue: string;
+  details: string;
+}
+
+export interface FormIssue {
+  element: string;
+  issue: string;
+  suggestion: string;
+}
+
+export interface LinkIssue {
+  html: string;
+  issue: 'empty' | 'generic' | 'context';
+  text: string;
+}
+
+export interface LandmarkIssue {
+  issue: string;
+  suggestion: string;
+}
+
+// ============================================
+// Phase 4.3: Mobile Accessibility
+// ============================================
+
+export interface MobileAccessibilityResult {
+  url: string;
+  timestamp: string;
+  touchTargets: TouchTarget[];
+  nonCompliantTargets: TouchTarget[];
+  viewportIssues: ViewportIssue[];
+  viewportConfig: {
+    width: string;
+    initialScale: string;
+    userScalable: boolean;
+    maximumScale: string | null;
+    minimumScale: string | null;
+  } | null;
+  zoomIssues: ZoomIssue[];
+  touchActionIssues: TouchActionIssue[];
+  mobileWcagIssues: MobileWCAGIssue[];
+  deviceTests: DeviceTest[];
+  mobileScore: number;
+  summary: {
+    totalTargets: number;
+    nonCompliantCount: number;
+    criticalIssues: number;
+    warningIssues: number;
+    infoIssues: number;
+  };
+  recommendations: string[];
+}
+
+export interface TouchTarget {
+  element: string;
+  html: string;
+  width: number;
+  height: number;
+  compliant: boolean;
+  recommendedSize: string;
+  x: number;
+  y: number;
+}
+
+export interface ViewportIssue {
+  issue: string;
+  current: string;
+  recommended: string;
+}
+
+export interface ZoomIssue {
+  issue: string;
+  meta: string;
+  suggestion: string;
+}
+
+export interface TouchActionIssue {
+  element: string;
+  issue: string;
+  suggestion: string;
+}
+
+export interface MobileWCAGIssue {
+  criterion: string;
+  issue: string;
+  impact: 'critical' | 'serious' | 'moderate' | 'minor';
+}
+
+export interface DeviceTest {
+  device: string;
+  width: number;
+  height: number;
+  issues: string[];
+}
+
+// ============================================
+// Phase 4.3: Visual Overlay
+// ============================================
+
+export interface VisualOverlayResult {
+  url: string;
+  timestamp: string;
+  viewport: {
+    width: number;
+    height: number;
+  };
+  screenshotBase64: string;
+  highlights: ViolationHighlight[];
+  summary: {
+    totalHighlights: number;
+    criticalCount: number;
+    seriousCount: number;
+    moderateCount: number;
+    minorCount: number;
+  };
+}
+
+export interface ViolationHighlight {
+  id: string;
+  violationId: string;
+  type: 'critical' | 'serious' | 'moderate' | 'minor';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  elementHtml: string;
+  message: string;
+  helpUrl: string;
+  selector: string;
+}
+
+// ============================================
+// Phase 4.3: Regression Tracking
+// ============================================
+
+export interface RegressionAnalysis {
+  scanId: string;
+  url: string;
+  timestamp: string;
+  totalViolations: number;
+  criticalCount: number;
+  seriousCount: number;
+  moderateCount: number;
+  minorCount: number;
+  previousScanId: string | null;
+  previousScanAt: string | null;
+  newViolations: A11yViolation[];
+  fixedViolations: A11yViolation[];
+  unchangedViolations: A11yViolation[];
+  trend: 'improving' | 'worsening' | 'stable' | 'new';
+  trendScore: number;
+  alertTriggered: boolean;
+  alertReasons: string[];
+}
+
+export interface URLTrackingStatus {
+  url: string;
+  urlHash: string;
+  totalScans: number;
+  lastScanId: string | null;
+  lastScanAt: string | null;
+  lastViolationCount: number;
+  lastComplianceScore: number | null;
+  bestScore: number | null;
+  worstScore: number | null;
+  averageScore: number | null;
+  trendDirection: 'improving' | 'worsening' | 'stable';
+  trendPercentage: number | null;
+}
+
+// ============================================
+// Phase 4.3: Complete Scan Result
+// ============================================
+
+export interface CompleteScanResult extends ScanResult {
+  screenReaderResult?: ScreenReaderResult;
+  mobileResult?: MobileAccessibilityResult;
+  visualOverlay?: VisualOverlayResult;
+  regressionAnalysis?: RegressionAnalysis;
+  enhancedFixes?: EnhancedFixSuggestion[];
+}
