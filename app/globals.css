@@ -69,8 +69,10 @@ pre {
   word-wrap: break-word;
 }
 
-/* Dark mode transitions */
-* {
+/* Dark mode transitions - only apply to theme-aware elements */
+body, div, nav, header, footer, main, section, article, aside, 
+.card, .panel, .modal, .dropdown, .menu, .sidebar,
+button, input, textarea, select, a {
   transition-property: background-color, border-color;
   transition-duration: 150ms;
   transition-timing-function: ease-in-out;
