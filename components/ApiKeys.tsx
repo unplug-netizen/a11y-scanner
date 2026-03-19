@@ -131,9 +131,9 @@ export function ApiKeysModal({ isOpen, onClose }: ApiKeysModalProps) {
         }
       }}
     >
-      <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Developer API Keys</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Developer API Keys</h2>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowCreateForm(true)}
@@ -144,16 +144,16 @@ export function ApiKeysModal({ isOpen, onClose }: ApiKeysModalProps) {
             </button>
             <button
               onClick={loadApiKeys}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               title="Aktualisieren"
             >
-              <RefreshCw className={`w-5 h-5 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-5 h-5 text-gray-500 dark:text-gray-400 ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </button>
           </div>
         </div>
@@ -176,12 +176,12 @@ export function ApiKeysModal({ isOpen, onClose }: ApiKeysModalProps) {
               />
             )
           ) : apiKeys.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
               <Key className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Noch keine API Keys vorhanden</p>
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                className="mt-4 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
               >
                 Ersten Key erstellen
               </button>
@@ -192,30 +192,32 @@ export function ApiKeysModal({ isOpen, onClose }: ApiKeysModalProps) {
                 <div 
                   key={key.id} 
                   className={`p-4 border rounded-lg ${
-                    key.isActive ? 'border-gray-200' : 'border-gray-200 bg-gray-50 opacity-75'
+                    key.isActive 
+                      ? 'border-gray-200 dark:border-gray-700' 
+                      : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 opacity-75'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-gray-900">{key.name}</h3>
+                        <h3 className="font-medium text-gray-900 dark:text-white">{key.name}</h3>
                         {!key.isActive && (
-                          <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                          <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs rounded-full">
                             Inaktiv
                           </span>
                         )}
                         {key.expiresAt && new Date(key.expiresAt) < new Date() && (
-                          <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded-full">
+                          <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-full">
                             Abgelaufen
                           </span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <code className="text-sm text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                        <code className="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
                           {key.keyPrefix}••••••••
                         </code>
                       </div>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1">
                           <BarChart3 className="w-4 h-4" />
                           {key.usageCount} Aufrufe
@@ -234,8 +236,8 @@ export function ApiKeysModal({ isOpen, onClose }: ApiKeysModalProps) {
                         onClick={() => toggleActive(key)}
                         className={`p-2 rounded-lg transition-colors ${
                           key.isActive 
-                            ? 'hover:bg-yellow-100 text-yellow-600' 
-                            : 'hover:bg-green-100 text-green-600'
+                            ? 'hover:bg-yellow-100 dark:hover:bg-yellow-900/30 text-yellow-600' 
+                            : 'hover:bg-green-100 dark:hover:bg-green-900/30 text-green-600'
                         }`}
                         title={key.isActive ? 'Deaktivieren' : 'Aktivieren'}
                       >
@@ -243,7 +245,7 @@ export function ApiKeysModal({ isOpen, onClose }: ApiKeysModalProps) {
                       </button>
                       <button
                         onClick={() => deleteApiKey(key.id)}
-                        className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                         title="Löschen"
                       >
                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -311,28 +313,28 @@ function CreateApiKeyForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-medium text-gray-900">Neuen API Key erstellen</h3>
+      <h3 className="font-medium text-gray-900 dark:text-white">Neuen API Key erstellen</h3>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="z.B. Produktion"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Rate Limit (Aufrufe pro Stunde)
         </label>
         <select
           value={rateLimit}
           onChange={(e) => setRateLimit(Number(e.target.value))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value={50}>50 / Stunde</option>
           <option value={100}>100 / Stunde</option>
@@ -342,13 +344,13 @@ function CreateApiKeyForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Ablauf (optional)
         </label>
         <select
           value={expiresInDays}
           onChange={(e) => setExpiresInDays(e.target.value ? Number(e.target.value) : '')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">Kein Ablauf</option>
           <option value={30}>30 Tage</option>
@@ -359,9 +361,9 @@ function CreateApiKeyForm({
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-red-600" />
-          <p className="text-sm text-red-700">{error}</p>
+          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
         </div>
       )}
 
@@ -369,7 +371,7 @@ function CreateApiKeyForm({
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
         >
           Abbrechen
         </button>
@@ -409,12 +411,12 @@ function NewKeyDisplay({
 
   return (
     <div className="space-y-4">
-      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
           <div>
-            <p className="font-medium text-yellow-800">Wichtig!</p>
-            <p className="text-sm text-yellow-700">
+            <p className="font-medium text-yellow-800 dark:text-yellow-400">Wichtig!</p>
+            <p className="text-sm text-yellow-700 dark:text-yellow-500">
               Kopiere den API Key jetzt. Er wird nicht mehr angezeigt!
             </p>
           </div>
@@ -422,9 +424,9 @@ function NewKeyDisplay({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Dein API Key</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dein API Key</label>
         <div className="flex gap-2">
-          <code className="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg font-mono text-sm break-all">
+          <code className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg font-mono text-sm text-gray-900 dark:text-gray-300 break-all">
             {apiKey.key}
           </code>
           <button
@@ -437,9 +439,9 @@ function NewKeyDisplay({
         </div>
       </div>
 
-      <div className="p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-medium text-gray-900 mb-2">API Nutzung</h4>
-        <pre className="text-sm text-gray-600 overflow-x-auto">
+      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <h4 className="font-medium text-gray-900 dark:text-white mb-2">API Nutzung</h4>
+        <pre className="text-sm text-gray-600 dark:text-gray-400 overflow-x-auto">
 {`curl -X POST https://a11y-scanner-red.vercel.app/api/v1/scan \\
   -H "x-api-key: ${apiKey.key}" \\
   -H "Content-Type: application/json" \\
