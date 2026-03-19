@@ -1,8 +1,8 @@
 {
   "functions": {
     "app/api/scan/route.ts": {
-      "maxDuration": 30,
-      "includeFiles": "node_modules/@sparticuz/chromium/bin/**"
+      "maxDuration": 30
     }
-  }
+  },
+  "buildCommand": "npm run build && cp -r node_modules/@sparticuz/chromium/bin .vercel/output/functions/app/api/scan/route.func/node_modules/@sparticuz/chromium/ 2>/dev/null || true"
 }
