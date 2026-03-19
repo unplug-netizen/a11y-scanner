@@ -1,5 +1,3 @@
-'use server';
-
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { readFileSync } from 'fs';
