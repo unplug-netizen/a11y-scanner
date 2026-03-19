@@ -42,6 +42,48 @@ Ich habe die A11y Scanner Webapp um folgende Features erweitert:
 - **JSON-Responses**
 - **UI-Komponenten**: `ApiKeysModal`
 
+### ✅ Phase 3 - Integrationen & UI Polish
+
+#### 1. Integrationen 🔗
+
+##### Slack Webhook
+- **Slack-Benachrichtigungen** bei Scan-Abschluss
+- **Konfigurierbare Webhook-URLs**
+- **Rich Messages** mit Violation-Details
+- **UI**: `IntegrationsModal`
+
+##### Email-Benachrichtigungen (Resend)
+- **Automatische Emails** bei geplanten Scans
+- **Nur bei neuen Issues** (optional)
+- **HTML-Emails** mit Scan-Ergebnissen
+- **Konfigurierbare Empfänger**
+
+##### GitHub Actions Integration
+- **CI/CD Workflow** für Accessibility-Checks
+- **API Endpoint**: `POST /api/ci/github`
+- **PR-Kommentare** mit Scan-Ergebnissen
+- **Fail-on-Threshold** konfigurierbar
+
+#### 2. UI/UX Polish ✨
+
+##### Dark Mode
+- **System-Preference** Erkennung
+- **Manueller Toggle** (Light/Dark/System)
+- **Konsistente Farben** über alle Komponenten
+- **Smooth Transitions**
+
+##### Dashboard
+- **Statistik-Übersicht** mit Trends
+- **Zeitraum-Auswahl** (7/30/90 Tage)
+- **Violations nach Schweregrad**
+- **Recent Scans** Liste
+- **Compliance-Rate**
+
+##### Onboarding-Flow
+- **6-Schritte Tour** für neue Nutzer
+- **Feature-Übersicht** (Scan, Scheduled, Bulk, Notifications)
+- **Überspringbar** und wiederholbar
+
 ## API Endpoints
 
 ### Core Routes
@@ -78,16 +120,35 @@ Ich habe die A11y Scanner Webapp um folgende Features erweitert:
 - `PATCH /api/api-keys?id=:id` - API Key aktualisieren
 - `DELETE /api/api-keys?id=:id` - API Key löschen
 
+### Phase 3 Routes
+
+#### Integrationen
+- `GET /api/integrations` - Integrationen abrufen
+- `POST /api/integrations` - Integrationen speichern
+- `DELETE /api/integrations` - Integrationen löschen
+
+#### Dashboard
+- `GET /api/dashboard?range=7d|30d|90d` - Dashboard-Statistiken
+
+#### CI/CD
+- `POST /api/ci/github` - GitHub Actions Integration
+
 ## Datenbank Schema
 
 Aktualisiert in `supabase/schema.sql`:
 
+### Phase 1-2
 - `scans` - Einzelne Scans
 - `bulk_scans` - Bulk Scan Jobs mit Status und Ergebnissen
 - `scheduled_scans` - Geplante Scans mit Frequenz und Notifications
 - `scheduled_scan_history` - Historie geplanter Scans
 - `api_keys` - API Keys mit Rate Limiting
 - `api_usage_logs` - API Nutzungs-Logs
+
+### Phase 3
+- `user_integrations` - Slack/Email Integrationen
+- `user_preferences` - Theme, Onboarding-Status
+- `notification_queue` - Ausstehende Benachrichtigungen
 
 ## Deployment
 
@@ -107,6 +168,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 OPENAI_API_KEY=
 CRON_SECRET= (optional, für Scheduled Scans)
+RESEND_API_KEY= (optional, für Email-Benachrichtigungen)
 ```
 
 ### Vercel Cron Jobs
@@ -128,33 +190,33 @@ Oder in `vercel.json`:
 
 ## Dateien geändert/erstellt
 
-### Neue API Routes
-- `app/api/bulk-scan/route.ts`
-- `app/api/scheduled-scan/route.ts`
-- `app/api/cron/scheduled-scan/route.ts`
-- `app/api/api-keys/route.ts`
-- `app/api/v1/scan/route.ts`
-- `app/api/v1/results/[id]/route.ts`
+### Neue API Routes (Phase 3)
+- `app/api/integrations/route.ts`
+- `app/api/dashboard/route.ts`
+- `app/api/ci/github/route.ts`
 
-### Neue Komponenten
-- `components/BulkScan.tsx`
-- `components/ScheduledScan.tsx`
-- `components/ApiKeys.tsx`
+### Neue Komponenten (Phase 3)
+- `components/Integrations.tsx`
+- `components/Dashboard.tsx`
+- `components/Onboarding.tsx`
+- `components/ThemeProvider.tsx`
+- `components/ThemeToggle.tsx`
 
-### Neue Libraries
-- `lib/api-auth.ts` - API Key Validierung und Rate Limiting
+### Neue Libraries (Phase 3)
+- `lib/notifications.ts` - Slack/Email Notifications
 
 ### Geänderte Dateien
-- `app/page.tsx` - Neue Features integriert
-- `types/index.ts` - Neue Typen für Phase 2
-- `supabase/schema.sql` - Neue Tabellen
-- `vercel.json` - Cron Jobs hinzugefügt
-- `README.md` - Dokumentation aktualisiert
+- `app/page.tsx` - Dashboard, ThemeToggle, Onboarding integriert
+- `app/layout.tsx` - ThemeProvider hinzugefügt
+- `app/globals.css` - Dark Mode Styles
+- `app/api/cron/scheduled-scan/route.ts` - Notifications hinzugefügt
+- `components/AuthProvider.tsx` - Onboarding-Tracking
+- `supabase/schema.sql` - Phase 3 Tabellen
 
 ## Nächste Schritte
 
-1. **Supabase Schema aktualisieren** - Neue Tabellen erstellen
-2. **Vercel Cron Jobs aktivieren** - Im Dashboard konfigurieren
-3. **Email-Service** - Für Scheduled Scan Notifications
+1. **Supabase Schema aktualisieren** - Neue Phase 3 Tabellen erstellen
+2. **Resend API Key** konfigurieren für Email-Benachrichtigungen
+3. **Slack App** erstellen für Webhook-Integration
 4. **Tests** - Neue Features testen
 5. **Dokumentation** - API Dokumentation erweitern
