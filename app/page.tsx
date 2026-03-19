@@ -10,6 +10,7 @@ import { UserMenu, AuthModal } from '@/components/AuthModal';
 import { ScanHistory } from '@/components/ScanHistory';
 import { useAuth } from '@/components/AuthProvider';
 import { Loader2, AlertCircle, CheckCircle, Info, Shield, History } from 'lucide-react';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   const [result, setResult] = useState<ScanResult | null>(null);
@@ -253,6 +254,8 @@ export default function Home() {
 
       {/* Auth Modal */}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+
+      <Footer />
     </main>
   );
 }

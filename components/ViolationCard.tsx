@@ -10,7 +10,8 @@ import {
   Wrench, 
   ExternalLink,
   Code,
-  Loader2
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 
 interface ViolationCardProps {
@@ -23,6 +24,8 @@ export function ViolationCard({ violation }: ViolationCardProps) {
   const [loadingFix, setLoadingFix] = useState(false);
   const [showFix, setShowFix] = useState(false);
 
+  const [fixError, setFixError] = useState<string | null>(null);
+
   const handleGenerateFix = async (html: string) => {
     if (fixSuggestion) {
       setShowFix(!showFix);
@@ -30,6 +33,7 @@ export function ViolationCard({ violation }: ViolationCardProps) {
     }
 
     setLoadingFix(true);
+    setFixError(null);
     try {
       const response = await fetch('/api/fix', {
         method: 'POST',
@@ -41,9 +45,12 @@ export function ViolationCard({ violation }: ViolationCardProps) {
       if (response.ok) {
         setFixSuggestion(data);
         setShowFix(true);
+      } else {
+        setFixError(data.error || 'Fehler beim Generieren des Fixes');
       }
     } catch (error) {
       console.error('Fix generation error:', error);
+      setFixError('Netzwerkfehler beim Generieren des Fixes');
     } finally {
       setLoadingFix(false);
     }
@@ -159,10 +166,21 @@ export function ViolationCard({ violation }: ViolationCardProps) {
                 )}
               </button>
 
+              {/* Fix Error */}
+              {fixError && (
+                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-red-700">{fixError}</p>
+                </div>
+              )}
+
               {/* Fix Suggestion */}
               {showFix && fixSuggestion && (
                 <div className="mt-3 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                  <h5 className="font-medium text-purple-900 mb-2">KI-Generierter Fix:</h5>
+                  <h5 className="font-medium text-purple-900 mb-2 flex items-center gap-2">
+                    <Wrench className="w-4 h-4" />
+                    KI-Generierter Fix:
+                  </h5>
                   <div className="bg-gray-900 rounded-lg p-3 overflow-x-auto mb-3">
                     <code className="text-sm text-green-400 font-mono">
                       {fixSuggestion.fixedCode}
