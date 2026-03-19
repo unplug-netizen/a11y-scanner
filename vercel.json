@@ -18,6 +18,5 @@
       "path": "/api/cron/scheduled-scan",
       "schedule": "0 9 * * *"
     }
-  ],
-  "buildCommand": "npm run build && cp -r node_modules/@sparticuz/chromium/bin .vercel/output/functions/app/api/scan/route.func/node_modules/@sparticuz/chromium/ 2>/dev/null || true"
+  ]
 }
