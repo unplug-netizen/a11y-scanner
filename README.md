@@ -2,6 +2,8 @@
 
 Ein MVP für automatisierte WCAG-Prüfung mit KI-generierten Fix-Vorschlägen.
 
+🚀 **Live Demo:** https://a11y-scanner-red.vercel.app
+
 ## Features
 
 - 🔍 URL-basierter Website-Scan mit axe-core
