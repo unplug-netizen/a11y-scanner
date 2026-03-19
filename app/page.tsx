@@ -30,9 +30,15 @@ import {
   Calendar,
   Key,
   Bell,
-  LayoutDashboard
+  LayoutDashboard,
+  Volume2,
+  Eye,
+  Activity
 } from 'lucide-react';
 import { Footer } from '@/components/Footer';
+import { ScreenReaderModal, ScreenReaderButton } from '@/components/ScreenReader';
+import { VisualOverlayModal, VisualOverlayButton } from '@/components/VisualOverlay';
+import { RegressionModal, RegressionButton } from '@/components/RegressionTracking';
 
 export default function Home() {
   const [result, setResult] = useState<ScanResult | null>(null);
@@ -47,6 +53,9 @@ export default function Home() {
   const [showIntegrationsModal, setShowIntegrationsModal] = useState(false);
   const [showDashboardModal, setShowDashboardModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showScreenReaderModal, setShowScreenReaderModal] = useState(false);
+  const [showVisualOverlayModal, setShowVisualOverlayModal] = useState(false);
+  const [showRegressionModal, setShowRegressionModal] = useState(false);
   const { isAuthenticated, user, session } = useAuth();
 
   // Show onboarding for new users
@@ -147,13 +156,13 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header with User Menu */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-6 h-6 text-blue-600" />
-            <span className="font-semibold text-gray-900">A11y Scanner</span>
+            <span className="font-semibold text-gray-900 dark:text-white">A11y Scanner</span>
           </div>
           <div className="flex items-center gap-2">
             {!isAuthenticated && (
@@ -163,6 +172,9 @@ export default function Home() {
             )}
             {isAuthenticated && (
               <>
+                <ScreenReaderButton onClick={() => setShowScreenReaderModal(true)} />
+                <VisualOverlayButton onClick={() => setShowVisualOverlayModal(true)} />
+                <RegressionButton onClick={() => setShowRegressionModal(true)} />
                 <button
                   onClick={() => setShowBulkScanModal(true)}
                   className="hidden sm:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -237,7 +249,31 @@ export default function Home() {
           
           {/* Feature Cards for authenticated users */}
           {isAuthenticated && (
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              <button
+                onClick={() => setShowScreenReaderModal(true)}
+                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
+              >
+                <Volume2 className="w-8 h-8 text-blue-600 mb-3" />
+                <h3 className="font-semibold text-gray-900">Screen Reader</h3>
+                <p className="text-sm text-gray-500 mt-1">Simuliere Screen Reader Erfahrung</p>
+              </button>
+              <button
+                onClick={() => setShowVisualOverlayModal(true)}
+                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all text-left"
+              >
+                <Eye className="w-8 h-8 text-purple-600 mb-3" />
+                <h3 className="font-semibold text-gray-900">Visual Overlay</h3>
+                <p className="text-sm text-gray-500 mt-1">Screenshot mit markierten Problemen</p>
+              </button>
+              <button
+                onClick={() => setShowRegressionModal(true)}
+                className="p-4 bg-white border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all text-left"
+              >
+                <Activity className="w-8 h-8 text-green-600 mb-3" />
+                <h3 className="font-semibold text-gray-900">Regression Tracking</h3>
+                <p className="text-sm text-gray-500 mt-1">Verfolge Änderungen über Zeit</p>
+              </button>
               <button
                 onClick={() => setShowBulkScanModal(true)}
                 className="p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all text-left"
@@ -406,6 +442,9 @@ export default function Home() {
       <IntegrationsModal isOpen={showIntegrationsModal} onClose={() => setShowIntegrationsModal(false)} />
       <DashboardModal isOpen={showDashboardModal} onClose={() => setShowDashboardModal(false)} />
       <OnboardingModal isOpen={showOnboarding} onClose={() => setShowOnboarding(false)} />
+      <ScreenReaderModal isOpen={showScreenReaderModal} onClose={() => setShowScreenReaderModal(false)} />
+      <VisualOverlayModal isOpen={showVisualOverlayModal} onClose={() => setShowVisualOverlayModal(false)} />
+      <RegressionModal isOpen={showRegressionModal} onClose={() => setShowRegressionModal(false)} />
 
       <Footer />
     </main>

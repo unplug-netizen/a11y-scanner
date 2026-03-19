@@ -12,7 +12,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode via class */
+/* Dark mode via class - muss NACH @theme kommen */
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
